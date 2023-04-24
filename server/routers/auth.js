@@ -4,16 +4,25 @@ var router = express.Router();
 const UserModel = require('../models/User');
 const { authRegister, authLogin, authLogout } = require('../functions/auth');
 
-router.get('/login/:username', (req, res) => {
-    res.send('username: ' + req.params.username);
-});
-
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
     const { username, password } = req.body;
-    authRegister(username, password);
+    console.log(req.body);
+    const token = await authRegister(username, password);
+    res.json({ token: token });
 });
 
-router.get('/logout', (req, res) => {
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const token = await authLogin(username, password);
+    res.json({ token: token });
+});
+
+router.post('/logout', (req, res) => {
+    const username = req.body.req;
+    const authHeader = req.headers.authorization;
+    console.log(authHeader);
+    const token = authHeader.split(' ')[1];
+    console.log(username, token);
     res.send('logout');
 });
 

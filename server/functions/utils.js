@@ -1,6 +1,8 @@
 // Get database models
-const UserModel = require('../models/User');
+require('dotenv').config();
 
+const UserModel = require('../models/User');
+const jwt = require('jsonwebtoken');
 /**
  * Create a new user by adding it into MongoDB database
  * Use cases:
@@ -10,18 +12,28 @@ const UserModel = require('../models/User');
  * @param { String } username 
  * @param { String } password 
  */
-async function createUser(username, password, permissionId) {
+// async function createUser(username, password, permissionId) {
+const createUser = async (username, password, permissionId) => {
+    const token = getUserAccessToken(username, password);
     newUser = {
         username: username,
         password: password,
         permissionId: permissionId,
-        jwt: 'testtoken'
+        token: token,
     }
     UserModel.create(newUser)
         .catch((e) => {
             console.log(e);
         });
+    return token;
 }
 
+const getUserAccessToken = (username, password) => {
+    const user = { username: username };
+    token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET + password);
+    return token
+}
 
-export { createUser }
+// const updateUesr = async ()
+
+module.exports = { createUser, getUserAccessToken };

@@ -1,7 +1,11 @@
 /**
  * This files contains functions that deals with user authentication.
  */
-const { createUser } = require('./utils');
+require('dotenv').config()
+
+const UserModel = require('../models/User');
+const { createUser, getUserAccessToken } = require('./utils');
+const jwt = require('jsonwebtoken');
 
 /**
  * A user login
@@ -9,20 +13,64 @@ const { createUser } = require('./utils');
  * @param { String } password 
  */
 async function authLogin(username, password) {
-    console.log('a user logging in');
+    // Authenticate user
+    const targetUser = await UserModel.findOne({ username: username, password: password });
+    if (!targetUser) {
+        console.log('No such user exists.');
+        return null;
+    } else {
+        token = getUserAccessToken(username, password);
+        console.log(targetUser);
+        // targetUser.token = token;
+        UserModel.updateOne(
+            {
+                username: username,
+                token: '',
+            },
+            {
+                $set: {
+                    token: token,
+                }
+            }
+            )
+        return token;
+    }
+}
+
+/**
+ * 
+ * @param { String } username 
+ * @param { String } token 
+ * @returns 
+ */
+async function authLogout(username, token) {
+    const targetUser = await UserModel.findOne({ username: username, token: token });
+    if (!targetUser) {
+        console.log('No such user exists.');
+        return null;
+    } else {
+        // token = getUserAccessToken(username, password);
+        // targetUser.token = token;
+        UserModel.updateOne(
+            { username: username },
+            {
+                $set: {
+                    token: ''
+                }
+            }
+        )
+    }
 }
 
 /**
  * 
  * @param { String } username 
  * @param { String } password 
- */
+*/
 async function authRegister(username, password) {
-    createUser(username, password, 1);
+    const token = await createUser(username, password, 1);
+    // const token = await authLogin(username, password);
+    return token; 
 }
 
-async function authLogout(username, jwt) {
-
-}
-
-export { authLogin, authLogout, authRegister };
+module.exports = { authLogin, authLogout, authRegister };

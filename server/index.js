@@ -1,10 +1,14 @@
 const express = require('express');
+const bodyParser = require('body-parser')
+const cors = require('cors');
+
 const mongoose = require('mongoose');
 
 const { createUser } = require('./functions/utils');
 
 // Initialize database server connection before the server starts
-const uri = 'mongodb://edisonsio:edisonsio@localhost:27017';
+// const uri = 'mongodb://edisonsio:edisonsio@localhost:27017';
+const uri = 'mongodb://root:example@127.0.0.1:27017';
 mongoose.connect(uri)
     .then((req, res) => {
         console.log('Connected to database server');
@@ -19,10 +23,13 @@ const UserModel = require('./models/User');
 // Create an admin user for the server
 adminUsername = 'admin';
 adminPassword = 'password';
-createUser(adminUsername, password, 0);
+createUser(adminUsername, adminPassword, 0);
 
 // Main app API server
 const app = express();
+
+app.use(bodyParser.json());
+// app.use(cors);
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
