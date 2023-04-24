@@ -35,11 +35,14 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
-const authRouter = require('./routers/auth.js');
+const authRouter = require('./routers/auth');
 app.use('/auth', authRouter);
 
-const userRouter = require('./routers/user.js');
+const userRouter = require('./routers/user');
 app.use('/user', userRouter);
+
+const rewardPlanRouter = require('./routers/rewardPlan');
+app.use('/rewardPlan', rewardPlanRouter);
 
 port = 5001;
 app.listen(port, () => {

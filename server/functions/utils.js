@@ -2,6 +2,7 @@
 require('dotenv').config();
 
 const UserModel = require('../models/User');
+const RewardPlanModel = require('../models/RewardPlan');
 const jwt = require('jsonwebtoken');
 /**
  * Create a new user by adding it into MongoDB database
@@ -20,6 +21,7 @@ const createUser = async (username, password, permissionId) => {
         password: password,
         permissionId: permissionId,
         token: token,
+        planList: []
     }
     UserModel.create(newUser)
         .catch((e) => {
@@ -34,6 +36,21 @@ const getUserAccessToken = (username, password) => {
     return token
 }
 
+const authenticateUser = async (username, token) => {
+    console.log(username)
+    const targetUser = await UserModel.findOne({ username: username });
+    if (!targetUser) {
+        console.log('No user named ' + username);
+        return false
+    }
+    const targetToken = targetUser.token;
+    if (targetToken != token) {
+        console.log('Authentication failed');
+        return false
+    }
+    return true
+}
+
 // const updateUesr = async ()
 
-module.exports = { createUser, getUserAccessToken };
+module.exports = { createUser, getUserAccessToken, authenticateUser }

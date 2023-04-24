@@ -22,17 +22,15 @@ async function authLogin(username, password) {
         token = getUserAccessToken(username, password);
         console.log(targetUser);
         // targetUser.token = token;
-        UserModel.updateOne(
+        await UserModel.updateOne(
             {
                 username: username,
                 token: '',
             },
             {
-                $set: {
-                    token: token,
-                }
+                $set: { token: token, }
             }
-            )
+        )
         return token;
     }
 }
@@ -47,18 +45,21 @@ async function authLogout(username, token) {
     const targetUser = await UserModel.findOne({ username: username, token: token });
     if (!targetUser) {
         console.log('No such user exists.');
-        return null;
+        return { status: 'error' };
     } else {
         // token = getUserAccessToken(username, password);
-        // targetUser.token = token;
-        UserModel.updateOne(
-            { username: username },
+        console.log(targetUser);
+        console.log(token);
+        await UserModel.updateOne(
             {
-                $set: {
-                    token: ''
-                }
+                username: username,
+                token: token
+            },
+            {
+                $set: { token: '' }
             }
         )
+        return { status: 'success' };
     }
 }
 

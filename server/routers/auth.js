@@ -17,13 +17,13 @@ router.post('/login', async (req, res) => {
     res.json({ token: token });
 });
 
-router.post('/logout', (req, res) => {
-    const username = req.body.req;
+router.post('/logout', async (req, res) => {
     const authHeader = req.headers.authorization;
-    console.log(authHeader);
+    const username = req.body.username;
     const token = authHeader.split(' ')[1];
-    console.log(username, token);
-    res.send('logout');
+
+    const status = await authLogout(username, token);
+    res.json(status);
 });
 
 module.exports = router;
