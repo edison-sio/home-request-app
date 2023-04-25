@@ -1,0 +1,39 @@
+{
+    "users": [
+        {
+            "username": "admin",
+            "hashedPassword": "hashedPassword",
+            "permissonId": 0,
+            "token": "test.token.sample",
+            "plansAdministering": [ "PlanOne" ],
+            "plansParticipating": [ "PlanTwo"],
+            "family": []
+        }
+    ],
+    "rewardPlans": [
+        {
+            "planName": "PlanOne",
+            "planType": "score/set",
+            "missions": [
+                {
+                    "missionName": "missionOne",
+                    "score": 1,
+                    "participantScoreList": [
+                        {
+                            "username": "userOne",
+                            "score": 1,
+                            "status": "todo/done"
+                        }
+                    ]
+                }
+            ],
+            "planAdmin": "admin",
+            "planParticipants": [
+                {
+                    "username": "userOne",
+                    "rewards": 0
+                }
+            ]
+        }
+    ]
+}
