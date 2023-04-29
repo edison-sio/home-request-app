@@ -3,7 +3,7 @@ const UserModel = require('../models/User')
 
 const { authenticateUser } =  require('./utils');
 
-const createRewardPlan = async (planName, planAdmin, token) => {
+const createRewardPlan = async (planName, planType, planAdmin, token) => {
     if (!authenticateUser(planAdmin, token)) {
         return {
             status: 'error',
@@ -11,11 +11,10 @@ const createRewardPlan = async (planName, planAdmin, token) => {
     }
     const newPlan = {
         planName: planName,
+        planType: planType,
+        missions: [],
         planAdmin: planAdmin,
-        missionList: [],
-        waitingList: [],
-        pendingList: [],
-        planMembers: []
+        planParticipants: []
     }
     RewardPlanModel.create(newPlan).catch((e) => {
         console.log(e);

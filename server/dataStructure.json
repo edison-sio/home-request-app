@@ -14,26 +14,9 @@
         {
             "planName": "PlanOne",
             "planType": "score/set",
-            "missions": [
-                {
-                    "missionName": "missionOne",
-                    "score": 1,
-                    "participantScoreList": [
-                        {
-                            "username": "userOne",
-                            "score": 1,
-                            "status": "todo/done"
-                        }
-                    ]
-                }
-            ],
+            "missions": [ "missionOne "],
             "planAdmin": "admin",
-            "planParticipants": [
-                {
-                    "username": "userOne",
-                    "rewards": 0
-                }
-            ]
+            "planParticipants": [ "userOne" ]
         }
     ]
 }
