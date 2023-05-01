@@ -2,7 +2,7 @@ const express = require('express');
 var router = express.Router();
 
 const UserModel = require('../models/User');
-const { authRegister, authLogin, authLogout } = require('../functions/auth');
+const { authRegister, authLogin, authLogout } = require('../modules/auth');
 
 router.post('/register', async (req, res) => {
     const { username, password } = req.body;

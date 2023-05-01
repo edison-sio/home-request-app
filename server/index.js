@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const mongoose = require('mongoose');
 
-const { createUser } = require('./functions/utils');
+const { createUser } = require('./modules/utils');
 
 // Initialize database server connection before the server starts
 // const uri = 'mongodb://edisonsio:edisonsio@localhost:27017';
@@ -18,7 +18,7 @@ mongoose.connect(uri)
     })
 
 // MongoDB schema model
-const UserModel = require('./models/User');
+const UserModel = require('./Models/User');
 
 // Create an admin user for the server
 adminUsername = 'admin';
