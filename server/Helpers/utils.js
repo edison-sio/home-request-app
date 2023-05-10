@@ -1,9 +1,10 @@
 // Get database models
 require('dotenv').config();
 
-const UserModel = require('../Models/User');
-const RewardPlanModel = require('../Models/RewardPlan');
+const UserModel = require('../models/User');
+const RewardPlanModel = require('../models/RewardPlan');
 const jwt = require('jsonwebtoken');
+const { createHash } = require('crypto');
 /**
  * Create a new user by adding it into MongoDB database
  * Use cases:
@@ -15,13 +16,14 @@ const jwt = require('jsonwebtoken');
  */
 // async function createUser(username, password, permissionId) {
 const createUser = async (username, password, permissionId) => {
-    const token = getUserAccessToken(username, password);
+    const token = generateUserAccessToken(username, password);
     newUser = {
         username: username,
-        password: password,
+        hashedPassword: passwordHash(password),
         permissionId: permissionId,
         token: token,
-        planList: []
+        plansAdministering: [],
+        plansParticipating: [],
     }
     UserModel.create(newUser)
         .catch((e) => {
@@ -44,6 +46,8 @@ const authenticateUser = async (username, token) => {
         return false
     }
     const targetToken = targetUser.token;
+    console.log(token);
+    console.log(targetToken);
     if (targetToken != token) {
         console.log('Authentication failed');
         return false
@@ -59,6 +63,10 @@ const checkUserExist = async (username) => {
     return true;
 }
 
+const passwordHash = (password) => {
+    return createHash('sha256').update(password + process.env.PASSWORD_HASH_SECRET).digest('hex');
+}
+
 // const updateUesr = async ()
 
-module.exports = { createUser, generateUserAccessToken, authenticateUser, checkUserExist }
+module.exports = { createUser, generateUserAccessToken, authenticateUser, checkUserExist, passwordHash };

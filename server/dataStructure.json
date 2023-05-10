@@ -14,9 +14,24 @@
         {
             "planName": "PlanOne",
             "planType": "score/set",
-            "missions": [ "missionOne "],
+            "missions": [
+                {
+                    "missionName": "missionOne",
+                    "status": "active"
+                }
+            ],
             "planAdmin": "admin",
-            "planParticipants": [ "userOne" ]
+            "planParticipants": [
+                {
+                    "username": "userOne",
+                    "history": [
+                        {
+                            "missionName": "missionOne",
+                            "timesComplete": 2
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

@@ -7,13 +7,6 @@ import styled from 'styled-components';
 import LoginForm from './LoginForm';
 
 const LoginPage = () => {
-    // Declare state variables for log in details.
-    // const [username, setUsername] = useState('');
-    // const [password, setPassword] = useState('');
-
-    // const [password, setPassword] = useState('');
-
-    // Declare functions for login, logout, etc.
     return (
         <FormContainer maxWidth='xs'>
             <LoginForm />

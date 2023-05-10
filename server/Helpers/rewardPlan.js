@@ -1,5 +1,5 @@
-const RewardPlanModel = require('../Models/RewardPlan');
-const UserModel = require('../Models/User')
+const RewardPlanModel = require('../models/RewardPlan');
+const UserModel = require('../models/User')
 
 const { authenticateUser, checkUserExist } =  require('./utils');
 
@@ -21,15 +21,15 @@ const createRewardPlan = async (planName, planType, planAdmin, token) => {
     });
     
     const targetUser = await UserModel.findOne({ username: planAdmin });
-    const planList = targetUser.planList;
+    const plansAdministering = targetUser.plansAdministering;
 
     console.log(targetUser);
 
-    planList.push(planName);
+    plansAdministering.push(planName);
     UserModel.updateOne(
         { username: planAdmin },
         {
-            $set: { planList: planList }
+            $set: { plansAdministering: plansAdministering }
         }
     ).catch((e) => {
         console.log(e);
@@ -61,96 +61,29 @@ const deleteRewardPlan = async (planName, planAdmin, token) => {
     
 }
 
-/**
- * Add a new mission
- * @param { String } missionName 
- * @param { String } planName 
- * @param { String } planAdmin 
- * @param { String } token 
- * @returns 
- */
-const addPlanMission = async (missionName, planName, planAdmin, token) => {
-    if (!authenticateUser(planAdmin, token)) {
-        return {
-            status: 'error',
-        }
-    }
-    const targetPlan = await RewardPlanModel.findOne({ planName: planName });
-    const missions = targetPlan.missions;
-    missions.push(missionName);
-
-    RewardPlanModel.updateOne(
-        { planName: planName },
-        {
-            $set: {
-                missions: missions
-            }
-        }
-    ).catch((e) => {
-        console.log(e);
-    })
-}
-
-const updatePlanMission = async (oldMissionName, newMissionName, planName, planAdmin, token) => {
-    if (!authenticateUser(planAdmin, token)) {
-        return {
-            status: 'error',
-        }
-    }
-    /**
-     * @todo: Update mission name
-     */
-    return {
-        status: 'success',
-    }
-}
-
-
-const removePlanMission = async (missionName, planName, planAdmin, token) => {
-    if (!authenticateUser(planAdmin, token)) {
-        return {
-            status: 'error',
-        }
-    }
-    const targetPlan = await RewardPlanModel.findOne({ planName: planName });
-    const missions = targetPlan.missions;
-    missions.shift(missionName);
-
-    RewardPlanModel.updateOne(
-        { planName: planName },
-        {
-            $set: {
-                missions: missions,
-            }
-        }
-    ).catch((e) => {
-        console.log(e);
-    })
-    return {
-        status: 'success',
-    }
-}
-
-// const moveMissionToPending = async (missionName, planName, planMember, token) => {
-//     if (!authenticateUser(planMember, token)) {
+// /**
+//  * Add a new mission
+//  * @param { String } missionName 
+//  * @param { String } planName 
+//  * @param { String } planAdmin 
+//  * @param { String } token 
+//  * @returns 
+//  */
+// const addPlanMission = async (missionName, planName, planAdmin, token) => {
+//     if (!authenticateUser(planAdmin, token)) {
 //         return {
 //             status: 'error',
 //         }
 //     }
-//     const targetMission = await RewardPlanModel.findOne({ planName: planName });
-//     const waitingList = targetMission.waitingList;
-//     const pendingList = targetMission.pendingList;
-
-//     const i = waitingList.indexOf(missionName);
-//     waitingList.splice(i, 1);
-//     pendingList.push(missionName);
+//     const targetPlan = await RewardPlanModel.findOne({ planName: planName });
+//     const missions = targetPlan.missions;
+//     missions.push(missionName);
 
 //     RewardPlanModel.updateOne(
 //         { planName: planName },
 //         {
 //             $set: {
-//                 waitingList: waitingList,
-//                 pendingList: pendingList,
+//                 missions: missions
 //             }
 //         }
 //     ).catch((e) => {
@@ -158,34 +91,44 @@ const removePlanMission = async (missionName, planName, planAdmin, token) => {
 //     })
 // }
 
-// const moveMissionToWaiting = async (missionName, planName, planMember, token) => {
-//     if (!authenticateUser(planMember, token)) {
+// const updatePlanMission = async (oldMissionName, newMissionName, planName, planAdmin, token) => {
+//     if (!authenticateUser(planAdmin, token)) {
 //         return {
 //             status: 'error',
 //         }
 //     }
-//     const targetMission = await RewardPlanModel.findOne({ planName: planName });
-//     const waitingList = targetMission.waitingList;
-//     const pendingList = targetMission.pendingList;
+//     /**
+//      * @todo: Update mission name
+//      */
+//     return {
+//         status: 'success',
+//     }
+// }
 
-//     console.log(targetMission);
-//     console.log(pendingList);
 
-//     const i = pendingList.indexOf(missionName);
-//     pendingList.splice(i, 1);
-//     waitingList.push(missionName);
+// const removePlanMission = async (missionName, planName, planAdmin, token) => {
+//     if (!authenticateUser(planAdmin, token)) {
+//         return {
+//             status: 'error',
+//         }
+//     }
+//     const targetPlan = await RewardPlanModel.findOne({ planName: planName });
+//     const missions = targetPlan.missions;
+//     missions.shift(missionName);
 
 //     RewardPlanModel.updateOne(
 //         { planName: planName },
 //         {
 //             $set: {
-//                 waitingList: waitingList,
-//                 pendingList: pendingList,
+//                 missions: missions,
 //             }
 //         }
 //     ).catch((e) => {
 //         console.log(e);
 //     })
+//     return {
+//         status: 'success',
+//     }
 // }
 
 // /**
@@ -209,7 +152,11 @@ const addPlanParticipant = async (participantName, planName, planAdmin, token) =
     }
     const targetPlan = RewardPlanModel.findOne({ planName: planName });
     const planParticipants = targetPlan.planParticipants;
-    planParticipants.push(participantName);
+    const newParticipant = {
+        username: participantName,
+        history: [],
+    }
+    planParticipants.push(newParticipant);
     
     RewardPlanModel.updateOne(
         { planName: planName },
@@ -234,12 +181,21 @@ const removePlanParticipant = async (participantName, planName, planAdmin, token
     }
     const targetPlan = RewardPlanModel.findOne({ planName: planName });
     const planParticipants = targetPlan.planParticipants;
-    if (!(participantName in planParticipants)) {
-        return {
-            status: 'error',
+    // if (!(participantName in planParticipants)) {
+    //     return {
+    //         status: 'error',
+    //     }
+    // }
+    const targetParticipant = null;
+    for (const planParticipant in planParticipant) {
+        if (planParticipant.username == participantName) {
+            targetParticipant = planParticipant;
         }
     }
-    planParticipants.shift(participantName);
+    if (!targetParticipant) {
+        errorHandler('Failed to remove participant');
+    }
+    planParticipants.shift(targetParticipant);
     
     RewardPlanModel.updateOne(
         { planName: planName },
@@ -252,4 +208,4 @@ const removePlanParticipant = async (participantName, planName, planAdmin, token
 }
 
 
-module.exports = { createRewardPlan, addPlanMission, removePlanMission, addPlanParticipant, removePlanParticipant, }
+module.exports = { createRewardPlan, addPlanParticipant, removePlanParticipant, }

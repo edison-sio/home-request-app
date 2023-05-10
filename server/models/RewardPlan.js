@@ -6,9 +6,9 @@ const mongoose = require('mongoose');
 const rewardPlanSchema = new mongoose.Schema({
     planName: { type: String, required: true, unique: true },
     planType: { type: String, required: true },
-    missions: { type: [String] },
+    missions: { type: [Object] },
     planAdmin: { type: String, required: true },
-    planMembers: { type: [String], required: true }
+    planParticipants: { type: [Object], required: true }
 });
 
 module.exports = mongoose.model('rewardPlan', rewardPlanSchema);
